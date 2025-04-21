@@ -67,5 +67,11 @@ namespace RevivalMod.Helpers
                 new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true })
             );
         }
+
+        //NEEDS TO DOWNLOAD SERVER CONFIG SO THAT THEY CAN SYNC 
+        public static void GetServerConfig()
+        {
+
+        }
     }
 }

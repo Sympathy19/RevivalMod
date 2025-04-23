@@ -297,7 +297,8 @@ class RevivalMod implements IPreSptLoadMod, IPostDBLoadMod, IPostSptLoadMod {
                             return this.httpResponseUtil.getBody({
                                 status: "ok",
                                 message: "Client received config",
-                                data: JSON.stringify(config)
+                                //ONLY SEND SERVER SETTINGS BACK TO CLIENT
+                                data: JSON.stringify(config.RevivalItem.Settings)
                             });
                         }
                     },

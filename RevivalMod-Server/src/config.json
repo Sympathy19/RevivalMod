@@ -3,6 +3,23 @@
         "Trading": {
             "Trader": "Therapist",
             "AmountRoubles": 150000
+        },
+        "Settings":{ 
+            //FORCES THE CLIENT TO RUN THESE SETTINGS 
+            "forceServerSettings": true,
+            //Adapt the duration of the amount of time it takes to revive.
+            "ReviveDuration": 4,
+            "RevivalCooldown": 180,
+            //Does not work if Hardcore Mode is enabled
+            "RestoreDamagedParts": false,
+            "IsHardcore": false,
+            //THESE SETTINGS ARE ONLY ACTIVE IF HARDCORE IS ENABLED
+            "HardcoreSettings":{
+                //Adapt how big the odds are to enter critical state (be revivable) in hardcore mode. 0.75 is 75%
+                "CriticalStateChance": 0.75,
+                "NoReviveOnHeadshot": false
+            }
+            
         }
     }
 }

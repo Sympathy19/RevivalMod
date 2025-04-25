@@ -14,6 +14,7 @@ using EFT.Communications;
 using Comfort.Common;
 using RevivalMod.Helpers;
 
+
 namespace RevivalMod.Features
 {
     /// <summary>
@@ -22,9 +23,18 @@ namespace RevivalMod.Features
     internal class RevivalFeatures : ModulePatch
     {
         // New constants for effects
-        private static readonly float MOVEMENT_SPEED_MULTIPLIER = 0.1f; // 40% normal speed during invulnerability
-        private static readonly bool FORCE_CROUCH_DURING_INVULNERABILITY = false; // Force player to crouch during invulnerability
-        private static readonly bool DISABLE_SHOOTING_DURING_INVULNERABILITY = false; // Disable shooting during invulnerability
+        /// <summary>
+        /// 40% normal speed during invulnerability
+        /// </summary>
+        private static readonly float MOVEMENT_SPEED_MULTIPLIER = 0.1f;
+        /// <summary>
+        /// Force player to crouch during invulnerability
+        /// </summary>
+        private static readonly bool FORCE_CROUCH_DURING_INVULNERABILITY = false;
+        /// <summary>
+        /// // Disable shooting during invulnerability
+        /// </summary>
+        private static readonly bool DISABLE_SHOOTING_DURING_INVULNERABILITY = false; 
 
         // States
         private static Dictionary<string, long> _lastRevivalTimesByPlayer = new Dictionary<string, long>();
@@ -339,6 +349,9 @@ namespace RevivalMod.Features
 
             // Check if the player has the revival item
             bool hasDefib = CheckRevivalItemInRaidInventory().Value;
+
+
+
 
             // Check if the revival is on cooldown
             bool isOnCooldown = false;

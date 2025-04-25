@@ -10,6 +10,13 @@ using UnityEngine;
 using EFT.InventoryLogic;
 using System.Linq;
 using RevivalMod.Helpers;
+using SPT.Common.Http;
+using Fika.Core.Networking;
+using Fika.Core.Coop.Utils;
+using System.Runtime.CompilerServices;
+using BepInEx.Configuration;
+using Newtonsoft.Json;
+using RevivalMod.Features.Packets;
 
 namespace RevivalMod.Patches
 {
@@ -19,6 +26,8 @@ namespace RevivalMod.Patches
         {
             return typeof(GameWorld).GetMethod(nameof(GameWorld.OnGameStarted));
         }
+
+
 
         [PatchPostfix]
         static void PatchPostfix()
@@ -41,6 +50,55 @@ namespace RevivalMod.Patches
                     Plugin.LogSource.LogError("MainPlayer is null");
                     return;
                 }
+
+                Plugin.LogSource.LogInfo($"Fikabackend -> IsClient: {FikaBackendUtils.IsClient} IsServer: {FikaBackendUtils.IsServer} IsHeadless: {FikaBackendUtils.IsHeadless}");
+
+                //REQUEST SERVER CONFIG IF CLIENT
+                if (!FikaBackendUtils.IsSinglePlayer && FikaBackendUtils.IsClient) Features.Handle.SettingsHandle.SyncRevivalSettings(playerClient);
+                else
+                {
+                    if(FikaBackendUtils.IsSinglePlayer) Plugin.LogSource.LogInfo("CLIENT IS SINGLE PLAYER!!");
+                    else
+                    {
+                        try
+                        {
+                            SendableServerSettings ServerConfig = Settings.GetServerConfig();
+                            string JSON = JsonConvert.SerializeObject(ServerConfig);
+                            Plugin.LogSource.LogInfo($"Server config -> {JSON}");
+                        }
+                        catch (Exception Ex) { Plugin.LogSource.LogError($"Exception Debugging Settings JSON\n\n {Ex.ToString()}"); }
+                    }
+
+
+
+
+
+                    //foreach(var key in Plugin.ClientConfig.Keys)
+                    //{
+                    //    //Plugin.LogSource.LogInfo($"     {key.Section} - {key.Key}");
+                    //    if (Plugin.ClientConfig.TryGetEntry<object>(key, out ConfigEntry<object> Entry))
+                    //    {
+
+
+                    //        Plugin.LogSource.LogInfo($"     {key.Section} - {Entry.GetType()} - {key.Key}");
+                    //    }
+                    //    else Plugin.LogSource.LogError("Failed to show config entry...");
+
+                    //    //config.TryGetEntry
+                    //    //
+                    //}
+
+                    //Features.Handle.SettingsHandle.SyncRevivalSettings(playerClient);
+                }
+
+                //Singleton<FikaServer>.Instance.SERVERE
+
+
+
+
+
+
+
 
                 // Check if player has revival item
                 string playerId = playerClient.ProfileId;

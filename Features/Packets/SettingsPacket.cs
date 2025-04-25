@@ -1,4 +1,5 @@
-﻿using LiteNetLib.Utils;
+﻿using BepInEx.Configuration;
+using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,21 @@ public struct SettingsPacket : INetSerializable
     /// </summary>
     public int PlayerId { get; set; } 
     public SettingsPacketType PacketType { get; set; }
-    #nullable enable
-    public string? ServerSettings { get; set; }
-    #nullable disable
+    public string ServerSettings { get; set; }
 
 
-    public SettingsPacket CreateSettingsPacket(SettingsPacketType PacketType, string? ServerSettingsJSON, int TargetedPlayerId = -1) => new SettingsPacket() { PacketType = PacketType, ServerSettings = ServerSettingsJSON, PlayerId = TargetedPlayerId };
+    public SettingsPacket CreateSettingsPacket(SettingsPacketType PacketType, string? ServerSettingsJSON, int TargetedPlayerId = -1)
+    {
+        string ServerSettings = String.Empty;
+        if (ServerSettingsJSON is not null) ServerSettings = ServerSettingsJSON;
+
+        return new SettingsPacket()
+        {
+            PacketType = PacketType,
+            ServerSettings = ServerSettings,
+            PlayerId = TargetedPlayerId
+        };
+    }
 
 
     public void Deserialize(NetDataReader reader)
@@ -39,8 +49,8 @@ public struct SettingsPacket : INetSerializable
     public void Serialize(NetDataWriter writer)
     {
         writer.Put(PlayerId);
-        writer.Put((int)PacketType); // Cast enum to int
-        writer.Put(ServerSettings ?? ""); // Handle nullable string
+        writer.Put((int)PacketType); 
+        writer.Put(ServerSettings); 
     }
 }
 
@@ -52,7 +62,7 @@ public class SendableServerSettings
 {
     public SendableServerSettings() { }
 
-    public SendableServerSettings(bool isTestMode, bool forceServerSettings, int reviveDuration, int revivalCooldown, bool restoreDamagedParts, bool headshotsAlwaysKill, bool isHardcore, float criticalModeChance)
+    public SendableServerSettings(bool isTestMode, bool forceServerSettings, float reviveDuration, float revivalCooldown, bool restoreDamagedParts, bool headshotsAlwaysKill, bool isHardcore, float criticalModeChance)
     {
         IsTestMode = isTestMode;
         ForceServerSettings = forceServerSettings;
@@ -63,8 +73,6 @@ public class SendableServerSettings
         IsHardcore = isHardcore;
         CriticalModeChance = criticalModeChance;
     }
-
-
 
     public bool IsTestMode { get; set; }
     public bool ForceServerSettings { get; set; }

@@ -1,6 +1,8 @@
 ﻿using Comfort.Common;
 using EFT;
+using Fika.Core.Coop.Utils;
 using Fika.Core.Networking;
+using LiteNetLib;
 using RevivalMod.Features.Packets;
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,15 @@ public class SettingsHandle
         }
     }
 
-    
+    public string GetServerConfig()
+    {
+        if (FikaBackendUtils.IsServer)
+        {
+            return "FAKE SERVER CONFIG SENT FROM SERVER";
+            //Plugin.GetConfigFile()
+        }
+        return String.Empty;
+    }
 
     /// <summary>
     /// PLAYER CALLS THIS FUNCTION ON GAME START AND ASKS THE SERVER FOR THE CONFIG OF THE SERVER 
@@ -42,5 +52,17 @@ public class SettingsHandle
     public static void SyncRevivalSettings(Player currentPlayer)
     {
 
+
+        if (FikaBackendUtils.IsClient)
+        {
+            SettingsPacket settingsPacket = new SettingsPacket
+            {
+                PlayerId = currentPlayer.Id,
+                PacketType = SettingsPacketType.ClientToServer
+            };
+
+            Singleton<FikaClient>.Instance.SendData<SettingsPacket>(ref settingsPacket, DeliveryMethod.ReliableUnordered);
+            Plugin.LogSource.LogError("NOT AN ERROR -> CLIENT SENDING SERVER SETTINGS REQUEST");
+        }
     }
 }

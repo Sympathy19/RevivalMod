@@ -25,17 +25,18 @@ namespace RevivalMod
         public static ConfigFile ClientConfig;
         public static ManualLogSource LogSource;
 
-
         // BaseUnityPlugin inherits MonoBehaviour, so you can use base unity functions like Awake() and Update()
         private void Awake()
         {
-            // save the Logger to variable so we can use it elsewhere in the project
+            // Save the Logger to variable so we can use it elsewhere in the project
             LogSource = Logger;
             LogSource.LogInfo("Revival plugin loaded!");
 
             //Load settings
             ClientConfig = Config;
             Settings.Init(Config);
+
+
             // Enable patches
             new DeathPatch().Enable();
             new RevivalFeatures().Enable();
@@ -53,10 +54,6 @@ namespace RevivalMod
         private void OnFikaNetworkManagerCreatedEvent(FikaNetworkManagerCreatedEvent @event)
         {
             @event.Manager.RegisterPacket<SettingsPacket>(new System.Action<SettingsPacket>(Features.Handle.SettingsHandle.OnHandleSettings));
-
-
-            ////PLAYER PACKETS - handle everything in one switch might not be effient but I already made the custom player packet
-            //@event.Manager.RegisterPacket<CustomPlayerPacket>(new System.Action<CustomPlayerPacket>(Features.Handle.PlayerPackets.HandlePlayerPackets.OnHandlePlayerPackets));
         }
     }
 }

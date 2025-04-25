@@ -1,5 +1,7 @@
 ﻿using BepInEx.Configuration;
 using RevivalMod.Features.Packets;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using static GClass1943;
 
@@ -26,6 +28,17 @@ namespace RevivalMod.Helpers
         /// setting to determine that if connected to a server, the client will do its best to use that server config if it can be downloaded
         /// </summary>
         public static bool UseServerConfig = true;
+
+        public static SendableServerSettings GetServerConfig() => new SendableServerSettings()
+        {
+            IsHardcore = Settings.HARDCORE_MODE.Value,
+            ReviveDuration = Settings.REVIVAL_DURATION.Value, 
+            RevivalCooldown = Settings.REVIVAL_COOLDOWN.Value,
+            RestoreDamagedParts = Settings.RESTORE_DESTROYED_BODY_PARTS.Value,
+            HeadshotsAlwaysKill = Settings.HARDCORE_HEADSHOT_DEFAULT_DEAD.Value,
+            CriticalModeChance = Settings.HARDCORE_CHANCE_OF_CRITICAL_STATE.Value,
+            IsTestMode = Settings.TESTING.Value,
+        };
 
 
         public static void Init(ConfigFile config)
@@ -83,8 +96,6 @@ namespace RevivalMod.Helpers
         //NEEDS TO DOWNLOAD SERVER CONFIG SO THAT THEY CAN SYNC 
         public static void LoadServerConfig(ConfigFile config, SendableServerSettings ServerSettings)
         {
-            
-
             HARDCORE_MODE = config.Bind(
                 "Hardcore Mode",
                 "Enable Hardcore Mode",
@@ -110,11 +121,11 @@ namespace RevivalMod.Helpers
                 ServerSettings.ReviveDuration,
                "Adapt the duration of the amount of time it takes to revive."
             );
-            REVIVAL_KEY = config.Bind(
-                "General",
-                "Revival Key",
-                KeyCode.F5
-            );
+            //REVIVAL_KEY = config.Bind(
+            //    "General",
+            //    "Revival Key",
+            //    KeyCode.F5
+            //);
             REVIVAL_COOLDOWN = config.Bind(
                 "General",
                 "Revival Cooldown",

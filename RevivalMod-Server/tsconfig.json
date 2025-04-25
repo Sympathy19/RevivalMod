@@ -6,7 +6,7 @@
     // "noEmit": true,
     "module": "CommonJS",
     "target": "ES2022",
-    "moduleResolution": "Node10",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -15,7 +15,8 @@
     "emitDecoratorMetadata": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@spt/*": ["./types/*"]
+      "@"
+      //"@spt/*": ["./types/*"]
     }
   },
   "include": ["src/**/*.ts"],

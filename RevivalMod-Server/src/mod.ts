@@ -294,11 +294,14 @@ class RevivalMod implements IPreSptLoadMod, IPostDBLoadMod, IPostSptLoadMod {
                         url: "/kaikinoodles/revivalmod/config",
                         action: async (url, info, sessionID) => {
                             this.logger.info(`[${this.mod}] Sending client, server config`);
+
+                            let configJSON =  JSON.stringify(config.RevivalItem.Settings)
+                            this.logger.info(`Server Config DEBUG -> ${configJSON}`)
                             return this.httpResponseUtil.getBody({
                                 status: "ok",
                                 message: "Client received config",
                                 //ONLY SEND SERVER SETTINGS BACK TO CLIENT
-                                data: JSON.stringify(config.RevivalItem.Settings)
+                                data: configJSON
                             });
                         }
                     },

@@ -8,6 +8,8 @@ using Fika.Core.Modding.Events;
 using System.Runtime.CompilerServices;
 using RevivalMod.Features.Packets;
 using BepInEx.Configuration;
+using Fika.Core.Modding;
+using System;
 
 namespace RevivalMod
 {
@@ -20,7 +22,7 @@ namespace RevivalMod
         /// Allows us to reuse the config later 
         /// </summary>
         /// <returns></returns>
-        public ConfigFile GetConfigFile() => Config;
+        public static ConfigFile ClientConfig;
         public static ManualLogSource LogSource;
 
 
@@ -30,6 +32,9 @@ namespace RevivalMod
             // save the Logger to variable so we can use it elsewhere in the project
             LogSource = Logger;
             LogSource.LogInfo("Revival plugin loaded!");
+
+            //Load settings
+            ClientConfig = Config;
             Settings.Init(Config);
             // Enable patches
             new DeathPatch().Enable();
@@ -37,14 +42,15 @@ namespace RevivalMod
             new GameStartedPatch().Enable();
             new MainMenuDebugPatch().Enable();
 
-            LogSource.LogInfo("Revival plugin initialized! Press F5 to use your defibrillator when in critical state.");
+            // Listen for network events!
+            FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(new Action<FikaNetworkManagerCreatedEvent>(this.OnFikaNetworkManagerCreatedEvent));
+
+            LogSource.LogInfo($"Revival plugin initialized! Press F5 to use your defibrillator when in critical state.");
         }
 
 
 
-        
-
-        private void OnFikaNetworkManagerCreated(FikaNetworkManagerCreatedEvent @event)
+        private void OnFikaNetworkManagerCreatedEvent(FikaNetworkManagerCreatedEvent @event)
         {
             @event.Manager.RegisterPacket<SettingsPacket>(new System.Action<SettingsPacket>(Features.Handle.SettingsHandle.OnHandleSettings));
 
